@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "fabricsit",
+  "version": "${version}",
+
+  "name": "FabricSit",
+  "description": "A serverside mod to allows players to sit on stairs and slabs",
+  "authors": [
+    "BradBot_1"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "Apache License v2",
+  "icon": "assets/fabricsit/icon.png",
+
+  "environment": "server",
+  "entrypoints": {
+    "server": [
+      "com.bb1.sit.Loader"
+    ]
+  },
+  "mixins": [
+    "modid.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {}
+}

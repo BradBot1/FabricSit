@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.bb1.sit.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  	"InteractModifier",
+  	"RidingMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
