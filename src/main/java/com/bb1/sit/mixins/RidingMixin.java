@@ -38,6 +38,7 @@ public abstract class RidingMixin extends Entity {
 			if (entity.getType()==EntityType.ARMOR_STAND && entity.getCustomName().asString().startsWith("FABRIC_SEAT_")) { // Its a seat so we should delete the entity
 				entity.removeAllPassengers();
 				entity.kill();
+				entity.updatePosition(entity.getX(), entity.getY()+1, entity.getZ());
 				callbackInfo.cancel();
 			}
 		}

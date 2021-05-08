@@ -4,6 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.Block;
@@ -39,6 +40,7 @@ import net.minecraft.world.World;
 @Mixin(ServerPlayerInteractionManager.class)
 public abstract class InteractModifier {
 	
+	@Shadow public ServerPlayerEntity player;
 	@Shadow public GameMode gameMode;
 	
 	@Inject(method = "interactBlock(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;", at = @At("HEAD"), cancellable = true)
@@ -48,13 +50,26 @@ public abstract class InteractModifier {
 		Block block = world.getBlockState(blockPos).getBlock();
 		if (!(block instanceof StairsBlock || block instanceof SlabBlock)) return;
 		Entity chair = createChair(world, blockPos);
+		Entity v = player.getVehicle();
+		if (v!=null) {
+			player.setSneaking(true);
+			player.tickRiding();
+		}
 		player.startRiding(chair, true);
 		callbackInfoReturnable.setReturnValue(ActionResult.success(true));
 		callbackInfoReturnable.cancel();
 	}
 	
+	@Inject(method = "setGameMode(Lnet/minecraft/world/GameMode;Lnet/minecraft/world/GameMode;)V", at = @At("HEAD"))
+	public void inject(GameMode gameMode, GameMode previousGameMode, CallbackInfo callbackInfo) {
+		if (gameMode==GameMode.SPECTATOR && previousGameMode!=GameMode.SPECTATOR && player.getVehicle()!=null) {
+			player.setSneaking(true);
+			player.tickRiding();
+		}
+	}
+	
 	public Entity createChair(World world, BlockPos blockPos) {
-		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-1.5, 0.5d+blockPos.getZ()) {
+		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-1.2, 0.5d+blockPos.getZ()) {
 			
 			@Override
 			public boolean canMoveVoluntarily() {
