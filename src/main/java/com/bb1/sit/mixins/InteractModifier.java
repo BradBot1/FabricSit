@@ -7,15 +7,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.bb1.sit.Loader;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -47,9 +48,10 @@ public abstract class InteractModifier {
 	public void inject(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> callbackInfoReturnable) {
 		if (gameMode==GameMode.SPECTATOR || !player.inventory.getMainHandStack().isEmpty() || player.isSneaking()) return;
 		BlockPos blockPos = hitResult.getBlockPos();
-		Block block = world.getBlockState(blockPos).getBlock();
+		BlockState blockState = world.getBlockState(blockPos);
+		Block block = blockState.getBlock();
 		if (!(block instanceof StairsBlock || block instanceof SlabBlock)) return;
-		Entity chair = createChair(world, blockPos);
+		Entity chair = Loader.createChair(world, blockPos, 1.2);
 		Entity v = player.getVehicle();
 		if (v!=null) {
 			player.setSneaking(true);
@@ -66,28 +68,6 @@ public abstract class InteractModifier {
 			player.setSneaking(true);
 			player.tickRiding();
 		}
-	}
-	
-	public Entity createChair(World world, BlockPos blockPos) {
-		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-1.2, 0.5d+blockPos.getZ()) {
-			
-			@Override
-			public boolean canMoveVoluntarily() {
-				return false;
-			}
-			
-			@Override
-			public boolean collides() {
-				return false;
-			}
-			
-		};
-		entity.setInvisible(true);
-		entity.setInvulnerable(true);
-		entity.setCustomName(new LiteralText("FABRIC_SEAT_"+world.getRandom().nextInt()));
-		entity.setNoGravity(true);
-		world.spawnEntity(entity);
-		return entity;
 	}
 	
 }

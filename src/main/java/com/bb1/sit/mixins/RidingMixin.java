@@ -35,7 +35,7 @@ public abstract class RidingMixin extends Entity {
 	public void inject(CallbackInfo callbackInfo) {
 		if (isSneaking() && hasVehicle()) { // The server will kick them off the entity
 			Entity entity = getVehicle();
-			if (entity.getType()==EntityType.ARMOR_STAND && entity.getCustomName().asString().startsWith("FABRIC_SEAT_")) { // Its a seat so we should delete the entity
+			if (entity.getType()==EntityType.ARMOR_STAND && entity.getCustomName().asString().startsWith("FABRIC_SEAT")) { // Its a seat so we should delete the entity
 				entity.removeAllPassengers();
 				entity.kill();
 				entity.updatePosition(entity.getX(), entity.getY()+1, entity.getZ());
