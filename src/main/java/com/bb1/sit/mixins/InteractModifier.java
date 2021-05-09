@@ -51,7 +51,7 @@ public abstract class InteractModifier {
 		BlockState blockState = world.getBlockState(blockPos);
 		Block block = blockState.getBlock();
 		if (!(block instanceof StairsBlock || block instanceof SlabBlock)) return;
-		Entity chair = Loader.createChair(world, blockPos, 1.2);
+		Entity chair = Loader.createChair(world, blockPos, 1.2, player.getPos());
 		Entity v = player.getVehicle();
 		if (v!=null) {
 			player.setSneaking(true);
