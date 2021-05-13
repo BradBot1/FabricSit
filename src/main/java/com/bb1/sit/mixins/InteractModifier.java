@@ -11,6 +11,7 @@ import com.bb1.sit.Loader;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SideShapeType;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.entity.Entity;
@@ -21,6 +22,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 /**
@@ -39,7 +41,7 @@ import net.minecraft.world.World;
  * limitations under the License.
  */
 @Mixin(ServerPlayerInteractionManager.class)
-public abstract class InteractModifier {
+public class InteractModifier {
 	
 	@Shadow public ServerPlayerEntity player;
 	@Shadow public GameMode gameMode;
@@ -50,7 +52,7 @@ public abstract class InteractModifier {
 		BlockPos blockPos = hitResult.getBlockPos();
 		BlockState blockState = world.getBlockState(blockPos);
 		Block block = blockState.getBlock();
-		if (!(block instanceof StairsBlock || block instanceof SlabBlock)) return;
+		if (!(block instanceof StairsBlock || block instanceof SlabBlock) || blockState.isSideSolid(world, blockPos, Direction.UP, SideShapeType.RIGID)) return;
 		Entity chair = Loader.createChair(world, blockPos, 1.2, player.getPos());
 		Entity v = player.getVehicle();
 		if (v!=null) {
