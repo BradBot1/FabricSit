@@ -89,7 +89,7 @@ public class Loader implements DedicatedServerModInitializer {
 			
 		};
 		entity.lookAt(EntityAnchor.EYES, target.subtract(0, (target.getY()*2), 0));
-		// entity.setInvisible(true);
+		entity.setInvisible(true);
 		entity.setInvulnerable(true);
 		entity.setCustomName(new LiteralText("FABRIC_SEAT"));
 		entity.setNoGravity(true);
