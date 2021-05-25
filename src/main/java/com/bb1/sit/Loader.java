@@ -29,7 +29,7 @@ import net.minecraft.world.World;
  * limitations under the License.
  */
 public class Loader implements DedicatedServerModInitializer {
-
+	
 	@Override
 	public void onInitializeServer() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
@@ -43,7 +43,7 @@ public class Loader implements DedicatedServerModInitializer {
             		return 0;
             	}
             	BlockState blockState = player.getEntityWorld().getBlockState(new BlockPos(player.getX(), player.getY()-1, player.getZ()));
-            	if (player.isFallFlying() || player.isSleeping() || player.isSwimming() || player.isSpectator() || blockState.isAir() || blockState.getMaterial().isLiquid()) return 0;
+            	if (player.hasVehicle() || player.isFallFlying() || player.isSleeping() || player.isSwimming() || player.isSpectator() || blockState.isAir() || blockState.getMaterial().isLiquid()) return 0;
             	Entity entity = createChair(player.getEntityWorld(), player.getBlockPos(), 1.7, player.getPos());
             	player.startRiding(entity, true);
             	return 1;
@@ -89,7 +89,7 @@ public class Loader implements DedicatedServerModInitializer {
 			
 		};
 		entity.lookAt(EntityAnchor.EYES, target.subtract(0, (target.getY()*2), 0));
-		entity.setInvisible(true);
+		// entity.setInvisible(true);
 		entity.setInvulnerable(true);
 		entity.setCustomName(new LiteralText("FABRIC_SEAT"));
 		entity.setNoGravity(true);

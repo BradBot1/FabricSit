@@ -5,7 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   	"InteractModifier",
-  	"RidingMixin"
+  	"RidingMixin",
+  	"DeathMixin",
+  	"TeleportMixin"
   ],
   "client": [
   ],
