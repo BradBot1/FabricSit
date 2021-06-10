@@ -48,7 +48,7 @@ public class InteractModifier {
 	
 	@Inject(method = "interactBlock(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;", at = @At("HEAD"), cancellable = true)
 	public void inject(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> callbackInfoReturnable) {
-		if (gameMode==GameMode.SPECTATOR || !player.inventory.getMainHandStack().isEmpty() || player.isSneaking()) return;
+		if (gameMode==GameMode.SPECTATOR || !player.getInventory().getMainHandStack().isEmpty() || player.isSneaking()) return;
 		BlockPos blockPos = hitResult.getBlockPos();
 		BlockState blockState = world.getBlockState(blockPos);
 		Block block = blockState.getBlock();
