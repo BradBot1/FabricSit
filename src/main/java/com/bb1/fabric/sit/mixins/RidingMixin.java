@@ -1,4 +1,4 @@
-package com.bb1.sit.mixins;
+package com.bb1.fabric.sit.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

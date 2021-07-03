@@ -19,7 +19,7 @@
   "environment": "server",
   "entrypoints": {
     "server": [
-      "com.bb1.sit.Loader"
+      "com.bb1.fabric.sit.Loader"
     ]
   },
   "mixins": [

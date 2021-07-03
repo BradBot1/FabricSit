@@ -1,4 +1,4 @@
-package com.bb1.sit;
+package com.bb1.fabric.sit;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;

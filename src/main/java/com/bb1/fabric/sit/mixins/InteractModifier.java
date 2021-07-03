@@ -1,4 +1,4 @@
-package com.bb1.sit.mixins;
+package com.bb1.fabric.sit.mixins;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.bb1.sit.Loader;
+import com.bb1.fabric.sit.Loader;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

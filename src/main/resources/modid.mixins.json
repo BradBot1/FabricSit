@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.bb1.sit.mixins",
+  "package": "com.bb1.fabric.sit.mixins",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
   	"InteractModifier",
