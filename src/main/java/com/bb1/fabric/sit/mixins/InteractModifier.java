@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.bb1.fabric.sit.Config;
 import com.bb1.fabric.sit.Loader;
 
 import net.minecraft.block.Block;
@@ -48,11 +49,18 @@ public class InteractModifier {
 	
 	@Inject(method = "interactBlock(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;", at = @At("HEAD"), cancellable = true)
 	public void inject(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> callbackInfoReturnable) {
-		if (gameMode==GameMode.SPECTATOR || !player.getInventory().getMainHandStack().isEmpty() || player.isSneaking()) return;
+		System.err.println("interact called");
+		if (gameMode==GameMode.SPECTATOR || !player.getInventory().getMainHandStack().isEmpty() || player.isSneaking()) { return; }
+		final Config config = Loader.getConfig();
+		if ((config.requireStanding && player.getVehicle()!=null)) { return; }
 		BlockPos blockPos = hitResult.getBlockPos();
 		BlockState blockState = world.getBlockState(blockPos);
 		Block block = blockState.getBlock();
-		if (!(block instanceof StairsBlock || block instanceof SlabBlock) || blockState.isSideSolid(world, blockPos, Direction.UP, SideShapeType.RIGID)) return;
+		if (!(block instanceof StairsBlock || block instanceof SlabBlock) || blockState.isSideSolid(world, blockPos, Direction.UP, SideShapeType.RIGID)) { return; }
+		final double reqDist = config.maxDistanceToSit;
+		double givenDist = blockPos.getSquaredDistance(player.getBlockPos());
+		if (reqDist>0 && (givenDist>(reqDist*reqDist))) { return; }
+		System.err.println(givenDist+" - "+(reqDist*reqDist));
 		Entity chair = Loader.createChair(world, blockPos, 1.2, player.getPos());
 		Entity v = player.getVehicle();
 		if (v!=null) {

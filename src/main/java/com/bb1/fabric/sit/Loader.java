@@ -1,7 +1,14 @@
 package com.bb1.fabric.sit;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.bb1.api.events.Events;
+
 import net.fabricmc.api.DedicatedServerModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
 import net.minecraft.entity.Entity;
@@ -30,10 +37,18 @@ import net.minecraft.world.World;
  */
 public class Loader implements DedicatedServerModInitializer {
 	
+	private static final Set<Entity> CHAIRS = new HashSet<Entity>();
+	
+	private static final Config CONFIG = new Config();
+	
+	public static final @NotNull Config getConfig() { return CONFIG; }
+	
 	@Override
 	public void onInitializeServer() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-            dispatcher.register(CommandManager.literal("sit").executes(context -> {
+		CONFIG.load();
+		CONFIG.save();
+		Events.GameEvents.COMMAND_REGISTRATION_EVENT.register((dualInput)->{
+			dualInput.get().register(CommandManager.literal("sit").executes(context -> {
             	final ServerCommandSource source = context.getSource();
             	ServerPlayerEntity player;
             	try {
@@ -48,12 +63,25 @@ public class Loader implements DedicatedServerModInitializer {
             	player.startRiding(entity, true);
             	return 1;
             }));
-        });
+		});
+		Events.GameEvents.STOP_EVENT.register((server)->{
+			for (Entity entity : CHAIRS) {
+				if (entity.isAlive()) { entity.kill(); }
+			}
+		});
 		System.out.println("[FabricSit] Loaded! Thank you for using FabricSit");
 	}
 	
-	public static Entity createChair(World world, BlockPos blockPos, double yOffset) {
+	public static Entity createChair(World world, BlockPos blockPos, double yOffset, @Nullable Vec3d target) {
 		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-yOffset, 0.5d+blockPos.getZ()) {
+			
+			private boolean v = false;
+			
+			@Override
+			protected void addPassenger(Entity passenger) {
+				super.addPassenger(passenger);
+				v = true;
+			}
 			
 			@Override
 			public boolean canMoveVoluntarily() {
@@ -65,35 +93,20 @@ public class Loader implements DedicatedServerModInitializer {
 				return false;
 			}
 			
+			@Override
+			public void tick() {
+				if (v && getPassengerList().size()<1) { kill(); }
+				super.tick();
+			}
+			
 		};
+		if (target!=null) entity.lookAt(EntityAnchor.EYES, target.subtract(0, (target.getY()*2), 0));
 		entity.setInvisible(true);
 		entity.setInvulnerable(true);
 		entity.setCustomName(new LiteralText("FABRIC_SEAT"));
 		entity.setNoGravity(true);
 		world.spawnEntity(entity);
-		return entity;
-	}
-	
-	public static Entity createChair(World world, BlockPos blockPos, double yOffset, Vec3d target) {
-		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-yOffset, 0.5d+blockPos.getZ()) {
-			
-			@Override
-			public boolean canMoveVoluntarily() {
-				return false;
-			}
-			
-			@Override
-			public boolean collides() {
-				return false;
-			}
-			
-		};
-		entity.lookAt(EntityAnchor.EYES, target.subtract(0, (target.getY()*2), 0));
-		entity.setInvisible(true);
-		entity.setInvulnerable(true);
-		entity.setCustomName(new LiteralText("FABRIC_SEAT"));
-		entity.setNoGravity(true);
-		world.spawnEntity(entity);
+		CHAIRS.add(entity);
 		return entity;
 	}
 	
