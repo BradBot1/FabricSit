@@ -1,7 +1,11 @@
 # FabricSit
 
 A simple server side fabric mod to allow players to sit on stairs and slabs!
- 
+
+## Required Mods
+
+> This mod is dependent on [BFAPI](https://github.com/BradBot1/BradsFabricApi)
+
 ## Commands
 
 |Name|Permission|OpLevel|Description|
