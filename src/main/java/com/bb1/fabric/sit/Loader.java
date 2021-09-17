@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.bb1.api.events.Events;
 
-import net.fabricmc.api.DedicatedServerModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
 import net.minecraft.entity.Entity;
@@ -35,7 +35,7 @@ import net.minecraft.world.World;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class Loader implements DedicatedServerModInitializer {
+public class Loader implements ModInitializer {
 	
 	private static final Set<Entity> CHAIRS = new HashSet<Entity>();
 	
@@ -44,7 +44,7 @@ public class Loader implements DedicatedServerModInitializer {
 	public static final @NotNull Config getConfig() { return CONFIG; }
 	
 	@Override
-	public void onInitializeServer() {
+	public void onInitialize() {
 		CONFIG.load();
 		CONFIG.save();
 		Events.GameEvents.COMMAND_REGISTRATION_EVENT.register((dualInput)->{
