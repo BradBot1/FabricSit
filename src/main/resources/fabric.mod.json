@@ -9,14 +9,14 @@
     "BradBot_1"
   ],
   "contact": {
-    "homepage": "",
-    "sources": ""
+    "homepage": "https://github.com/BradBot1/FabricSit",
+    "sources": "https://github.com/BradBot1/FabricSit"
   },
 
   "license": "Apache License v2",
   "icon": "assets/fabricsit/icon.png",
 
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "com.bb1.fabric.sit.Loader"

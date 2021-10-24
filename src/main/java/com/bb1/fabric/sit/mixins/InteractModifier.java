@@ -59,7 +59,7 @@ public class InteractModifier {
 		final double reqDist = config.maxDistanceToSit;
 		double givenDist = blockPos.getSquaredDistance(player.getBlockPos());
 		if (reqDist>0 && (givenDist>(reqDist*reqDist))) { return; }
-		Entity chair = Loader.createChair(world, blockPos, 1.2, player.getPos());
+		Entity chair = Loader.createChair(world, blockPos, 1.2, player.getPos(), true);
 		Entity v = player.getVehicle();
 		if (v!=null) {
 			player.setSneaking(true);

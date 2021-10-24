@@ -59,7 +59,7 @@ public class Loader implements ModInitializer {
             	}
             	BlockState blockState = player.getEntityWorld().getBlockState(new BlockPos(player.getX(), player.getY()-1, player.getZ()));
             	if (player.hasVehicle() || player.isFallFlying() || player.isSleeping() || player.isSwimming() || player.isSpectator() || blockState.isAir() || blockState.getMaterial().isLiquid()) return 0;
-            	Entity entity = createChair(player.getEntityWorld(), player.getBlockPos(), 1.7, player.getPos());
+            	Entity entity = createChair(player.getEntityWorld(), player.getBlockPos(), 1.7, player.getPos(), false);
             	player.startRiding(entity, true);
             	return 1;
             }));
@@ -72,7 +72,7 @@ public class Loader implements ModInitializer {
 		System.out.println("[FabricSit] Loaded! Thank you for using FabricSit");
 	}
 	
-	public static Entity createChair(World world, BlockPos blockPos, double yOffset, @Nullable Vec3d target) {
+	public static Entity createChair(World world, BlockPos blockPos, double yOffset, @Nullable Vec3d target, boolean boundToBlock) {
 		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-yOffset, 0.5d+blockPos.getZ()) {
 			
 			private boolean v = false;
@@ -96,6 +96,7 @@ public class Loader implements ModInitializer {
 			@Override
 			public void tick() {
 				if (v && getPassengerList().size()<1) { kill(); }
+				if (getEntityWorld().getBlockState(getCameraBlockPos()).isAir() && boundToBlock) { kill(); }
 				super.tick();
 			}
 			
