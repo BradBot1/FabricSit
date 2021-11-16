@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bb1.fabric.sit.Config;
 import com.bb1.fabric.sit.Loader;
 
+import net.minecraft.util.math.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SideShapeType;
@@ -22,8 +23,6 @@ import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 /**
@@ -46,7 +45,7 @@ public class InteractModifier {
 	
 	@Shadow public ServerPlayerEntity player;
 	@Shadow public GameMode gameMode;
-	
+
 	@Inject(method = "interactBlock(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;", at = @At("HEAD"), cancellable = true)
 	public void inject(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> callbackInfoReturnable) {
 		final Config config = Loader.getConfig();
@@ -59,7 +58,19 @@ public class InteractModifier {
 		final double reqDist = config.maxDistanceToSit;
 		double givenDist = blockPos.getSquaredDistance(player.getBlockPos());
 		if (reqDist>0 && (givenDist>(reqDist*reqDist))) { return; }
-		Entity chair = Loader.createChair(world, blockPos, 1.2, player.getPos(), true);
+
+		Vec3d lookTarget;
+		if (block instanceof StairsBlock)
+		{
+		 	Direction direction = blockState.get(StairsBlock.FACING);
+		 	Vec3f offset = direction.getUnitVector();
+			lookTarget = new Vec3d(blockPos.getX() + 0.5 - offset.getX(), blockPos.getY(), blockPos.getZ() + 0.5 - offset.getZ());
+			System.out.println("hi");
+		}
+		else
+			lookTarget = player.getPos();
+
+		Entity chair = Loader.createChair(world, blockPos, 1.2, lookTarget, true);
 		Entity v = player.getVehicle();
 		if (v!=null) {
 			player.setSneaking(true);
