@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.bb1.fabric.sit.Config;
 import com.bb1.fabric.sit.Loader;
 
+import net.minecraft.block.enums.StairShape;
 import net.minecraft.util.math.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -64,8 +65,12 @@ public class InteractModifier {
 		{
 		 	Direction direction = blockState.get(StairsBlock.FACING);
 		 	Vec3f offset = direction.getUnitVector();
+			StairShape stairShape = blockState.get(StairsBlock.SHAPE);
+			if (stairShape == StairShape.OUTER_RIGHT || stairShape == StairShape.INNER_RIGHT)
+				offset.add(direction.rotateYClockwise().getUnitVector());
+			if (stairShape == StairShape.OUTER_LEFT || stairShape == StairShape.INNER_LEFT)
+			 	offset.add(direction.rotateYCounterclockwise().getUnitVector());
 			lookTarget = new Vec3d(blockPos.getX() + 0.5 - offset.getX(), blockPos.getY(), blockPos.getZ() + 0.5 - offset.getZ());
-			System.out.println("hi");
 		}
 		else
 			lookTarget = player.getPos();
