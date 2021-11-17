@@ -6,7 +6,8 @@
   "name": "FabricSit",
   "description": "A serverside mod to allows players to sit on stairs and slabs",
   "authors": [
-    "BradBot_1"
+    "BradBot_1",
+    "WerDei"
   ],
   "contact": {
     "homepage": "https://github.com/BradBot1/FabricSit",
