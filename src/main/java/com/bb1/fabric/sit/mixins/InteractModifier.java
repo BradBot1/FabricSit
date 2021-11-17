@@ -61,8 +61,8 @@ public class InteractModifier {
 		if (reqDist>0 && (givenDist>(reqDist*reqDist))) { return; }
 
 		Vec3d lookTarget;
-		if (block instanceof StairsBlock)
-		{
+		Vec3d blockPosOffset;
+		if (block instanceof StairsBlock) {
 		 	Direction direction = blockState.get(StairsBlock.FACING);
 		 	Vec3f offset = direction.getUnitVector();
 			StairShape stairShape = blockState.get(StairsBlock.SHAPE);
@@ -71,11 +71,17 @@ public class InteractModifier {
 			if (stairShape == StairShape.OUTER_LEFT || stairShape == StairShape.INNER_LEFT)
 			 	offset.add(direction.rotateYCounterclockwise().getUnitVector());
 			lookTarget = new Vec3d(blockPos.getX() + 0.5 - offset.getX(), blockPos.getY(), blockPos.getZ() + 0.5 - offset.getZ());
+			blockPosOffset = new Vec3d(offset);
+		 	blockPosOffset = blockPosOffset.multiply(-3f/16);
 		}
-		else
+		else {
 			lookTarget = player.getPos();
+			blockPosOffset = Vec3d.ZERO;
+		}
 
-		Entity chair = Loader.createChair(world, blockPos, 1.2, lookTarget, true);
+		blockPosOffset = blockPosOffset.add(0, -1.2, 0);
+		Entity chair = Loader.createChair(world, blockPos, blockPosOffset, lookTarget, true);
+
 		Entity v = player.getVehicle();
 		if (v!=null) {
 			player.setSneaking(true);
