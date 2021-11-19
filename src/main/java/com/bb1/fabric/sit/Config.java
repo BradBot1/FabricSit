@@ -28,5 +28,7 @@ public class Config extends com.bb1.api.config.Config {
 	@Storable public double maxDistanceToSit = -1;
 	
 	@Storable public boolean requireEmptyHand = true;
-	
+
+	@Storable public boolean noOpaqueBlockAbove = true;
+
 }

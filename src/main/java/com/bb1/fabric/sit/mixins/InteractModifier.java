@@ -53,6 +53,9 @@ public class InteractModifier {
 		if (gameMode==GameMode.SPECTATOR || (config.requireEmptyHand && !player.getInventory().getMainHandStack().isEmpty()) || player.isSneaking()) { return; }
 		if (config.requireStanding && player.getVehicle()!=null) { return; }
 		BlockPos blockPos = hitResult.getBlockPos();
+
+		if (config.noOpaqueBlockAbove && world.getBlockState(blockPos.add(0, 1, 0)).isOpaque()) return;
+
 		BlockState blockState = world.getBlockState(blockPos);
 		Block block = blockState.getBlock();
 		if (!(block instanceof StairsBlock || block instanceof SlabBlock) || blockState.isSideSolid(world, blockPos, Direction.UP, SideShapeType.RIGID)) { return; }
