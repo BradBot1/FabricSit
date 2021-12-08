@@ -28,9 +28,18 @@
 
   "depends": {
     "fabricloader": ">=0.11.3",
-    "minecraft": "1.17.x",
+    "minecraft": "1.18.x",
     "java": ">=16",
-    "bfapi": ">=1.1.6"
+    "bfapi": ">=1.2.0"
   },
-  "suggests": {}
+  "suggests": {},
+  "custom": {
+  	"modlist": {
+	  	"description": "A simple mod to add sitting to minecraft!",
+	  	"submodof": "bfapi"
+	 },
+	"modmenu": {
+        "parent": "bfapi"
+    }
+  }
 }

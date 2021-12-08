@@ -1,22 +1,17 @@
 package com.bb1.fabric.sit;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.bb1.api.events.Events;
+import com.bb1.fabric.bfapi.events.Event;
+import com.bb1.fabric.bfapi.utils.Inputs.Input;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.EntityAnchorArgumentType.EntityAnchor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -37,7 +32,9 @@ import net.minecraft.world.World;
  */
 public class Loader implements ModInitializer {
 	
-	private static final Set<Entity> CHAIRS = new HashSet<Entity>();
+	public static final Event<Input<Loader>> LOADER_LOADED = new Event<Input<Loader>>(new Identifier("fabricsit:loaded"));
+	
+	public static final Event<Input<Entity>> CHAIR_CREATED = new Event<Input<Entity>>(new Identifier("fabricsit:chair_created"));
 	
 	private static final Config CONFIG = new Config();
 	
@@ -47,29 +44,9 @@ public class Loader implements ModInitializer {
 	public void onInitialize() {
 		CONFIG.load();
 		CONFIG.save();
-		Events.GameEvents.COMMAND_REGISTRATION_EVENT.register((dualInput)->{
-			dualInput.get().register(CommandManager.literal("sit").executes(context -> {
-            	final ServerCommandSource source = context.getSource();
-            	ServerPlayerEntity player;
-            	try {
-            		player = source.getPlayer();
-            	} catch (Exception e) {
-            		source.sendError(new LiteralText("You must be a player to run this command"));
-            		return 0;
-            	}
-            	BlockState blockState = player.getEntityWorld().getBlockState(new BlockPos(player.getX(), player.getY()-1, player.getZ()));
-            	if (player.hasVehicle() || player.isFallFlying() || player.isSleeping() || player.isSwimming() || player.isSpectator() || blockState.isAir() || blockState.getMaterial().isLiquid()) return 0;
-            	Entity entity = createChair(player.getEntityWorld(), player.getBlockPos(), 1.7, player.getPos(), false);
-            	player.startRiding(entity, true);
-            	return 1;
-            }));
-		});
-		Events.GameEvents.STOP_EVENT.register((server)->{
-			for (Entity entity : CHAIRS) {
-				if (entity.isAlive()) { entity.kill(); }
-			}
-		});
+		new SitEventListener();
 		System.out.println("[FabricSit] Loaded! Thank you for using FabricSit");
+		LOADER_LOADED.emit(Input.of(this));
 	}
 	
 	public static Entity createChair(World world, BlockPos blockPos, double yOffset, @Nullable Vec3d target, boolean boundToBlock) {
@@ -107,7 +84,7 @@ public class Loader implements ModInitializer {
 		entity.setCustomName(new LiteralText("FABRIC_SEAT"));
 		entity.setNoGravity(true);
 		world.spawnEntity(entity);
-		CHAIRS.add(entity);
+		CHAIR_CREATED.emit(Input.of(entity));
 		return entity;
 	}
 	
