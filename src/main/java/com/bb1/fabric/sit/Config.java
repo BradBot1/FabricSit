@@ -39,6 +39,9 @@ public class Config extends com.bb1.fabric.bfapi.config.Config {
 	@ConfigComment(contents = "If the player needs an empty hand in order to sitdown")
 	public boolean requireEmptyHand = true;
 	
+	@ConfigComment(contents = "If the block above a chair has to be air")
+	public boolean noOpaqueBlockAbove = true;
+	
 	@ConfigComment(contents = "If the player needs a permission to use /sit")
 	@ConfigSub(subOf = "permissions")
 	public boolean requirePermission = false;

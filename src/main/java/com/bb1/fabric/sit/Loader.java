@@ -49,8 +49,8 @@ public class Loader implements ModInitializer {
 		LOADER_LOADED.emit(Input.of(this));
 	}
 	
-	public static Entity createChair(World world, BlockPos blockPos, double yOffset, @Nullable Vec3d target, boolean boundToBlock) {
-		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX(), blockPos.getY()-yOffset, 0.5d+blockPos.getZ()) {
+	public static Entity createChair(World world, BlockPos blockPos, Vec3d blockPosOffset, @Nullable Vec3d target, boolean boundToBlock) {
+		ArmorStandEntity entity = new ArmorStandEntity(world, 0.5d+blockPos.getX()+blockPosOffset.getX(), blockPos.getY()+ blockPosOffset.getY(), 0.5d+blockPos.getZ() + blockPosOffset.getZ()) {
 			
 			private boolean v = false;
 			
